@@ -425,5 +425,16 @@ FodyWeavers.xsd
 *.cab
 *.msi
 *.msix
+
+# Project-local CMake and packaging output
+/build/
+/out/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+*.cer
+
+# Agent worktrees
+.claude/worktrees/
 *.msm
 *.msp

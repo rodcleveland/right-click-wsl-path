@@ -1,0 +1,47 @@
+Windows Registry Editor Version 5.00
+
+; -----------------------------------------------------------------------------
+; Classic "Copy as WSL path" context-menu verbs (Win10 / Win11 "Show more
+; options"). This is a STATIC alternative to install-classic.ps1.
+;
+; BEFORE IMPORTING: replace every occurrence of
+;   C:\\Path\\To\\wslpathcopy.exe
+; with the real, double-backslashed path to your built wslpathcopy.exe.
+; (The PowerShell installer does this substitution automatically.)
+;
+; Note (KTD4): classic verbs invoke the command once per selected item, so
+; multi-select copies per-item. The modern Win11 handler aggregates the whole
+; selection.
+; -----------------------------------------------------------------------------
+
+; --- Files ---
+[HKEY_CURRENT_USER\Software\Classes\*\shell\CopyAsWslPath]
+@="Copy as WSL path"
+"Icon"="\"C:\\Path\\To\\wslpathcopy.exe\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\CopyAsWslPath\command]
+@="\"C:\\Path\\To\\wslpathcopy.exe\" \"%1\""
+
+; --- Folders ---
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\CopyAsWslPath]
+@="Copy as WSL path"
+"Icon"="\"C:\\Path\\To\\wslpathcopy.exe\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\shell\CopyAsWslPath\command]
+@="\"C:\\Path\\To\\wslpathcopy.exe\" \"%1\""
+
+; --- Folder background (uses %V = the open folder) ---
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\CopyAsWslPath]
+@="Copy as WSL path"
+"Icon"="\"C:\\Path\\To\\wslpathcopy.exe\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\Directory\Background\shell\CopyAsWslPath\command]
+@="\"C:\\Path\\To\\wslpathcopy.exe\" \"%V\""
+
+; --- Drives ---
+[HKEY_CURRENT_USER\Software\Classes\Drive\shell\CopyAsWslPath]
+@="Copy as WSL path"
+"Icon"="\"C:\\Path\\To\\wslpathcopy.exe\",0"
+
+[HKEY_CURRENT_USER\Software\Classes\Drive\shell\CopyAsWslPath\command]
+@="\"C:\\Path\\To\\wslpathcopy.exe\" \"%V\""

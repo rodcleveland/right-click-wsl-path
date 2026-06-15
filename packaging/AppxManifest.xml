@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Sparse package manifest for the "Copy as WSL path" Win11 context-menu handler.
+
+  A sparse package registers the IExplorerCommand COM handler with the shell
+  without bundling the unpackaged binaries; the actual DLL is loaded from the
+  external location passed to Add-AppxPackage (-ExternalLocation). See
+  register.ps1.
+
+  The Publisher below MUST match the subject of the signing certificate used in
+  register.ps1 (CN=RightClickWslPath Dev). Update both together if you change it.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+  xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities">
+
+  <Identity
+    Name="RightClickWslPath"
+    Publisher="CN=RightClickWslPath Dev"
+    Version="0.1.0.0"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Copy as WSL Path</DisplayName>
+    <PublisherDisplayName>RightClickWslPath Dev</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <uap10:AllowExternalContent
+      xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10">true</uap10:AllowExternalContent>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0"
+      MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+
+  <Applications>
+    <Application Id="WslPathContextMenu"
+      Executable="wslpathcopy.exe"
+      EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Copy as WSL Path"
+        Description="Copy a file or folder path in WSL format"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        AppListEntry="none" />
+
+      <Extensions>
+        <!-- COM server: maps the handler CLSID to the in-proc DLL. -->
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:SurrogateServer DisplayName="Copy as WSL Path Command">
+              <com:Class
+                Id="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60"
+                Path="WslPathHandler.dll"
+                ThreadingModel="STA" />
+            </com:SurrogateServer>
+          </com:ComServer>
+        </com:Extension>
+
+        <!-- Context-menu handler bound to the CLSID above. The modern
+             FileExplorerContextMenus schema only permits these ItemTypes:
+             * (files), Directory (folders), Directory\Background. "Drive" is
+             NOT expressible here, so drives get the entry via the classic
+             HKCU verb instead (see install-classic.ps1). -->
+        <desktop4:Extension Category="windows.fileExplorerContextMenus">
+          <desktop4:FileExplorerContextMenus>
+            <desktop5:ItemType Type="*">
+              <desktop5:Verb Id="CopyAsWslPath" Clsid="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory">
+              <desktop5:Verb Id="CopyAsWslPath" Clsid="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory\Background">
+              <desktop5:Verb Id="CopyAsWslPath" Clsid="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60" />
+            </desktop5:ItemType>
+          </desktop4:FileExplorerContextMenus>
+        </desktop4:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>
