@@ -86,6 +86,12 @@ Removes the sparse package and the classic shell verbs.
 
 ## Known limitations
 
+- **Drives appear only in the classic menu.** The modern Win11
+  `FileExplorerContextMenus` manifest schema permits only `*`, `Directory`, and
+  `Directory\Background` item types — `Drive` is not expressible. Right-clicking a
+  drive shows "Copy as WSL path" under **Show more options** (classic verb), not
+  in the Win11 main menu. Files, folders, and folder background appear in the
+  main menu.
 - **Win10 multi-select copies per-item.** Classic shell verbs invoke the command
   once per selected item, so selecting several items and clicking the entry
   copies them individually (last one wins on the clipboard). True newline-joined

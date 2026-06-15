@@ -71,9 +71,11 @@
           </com:ComServer>
         </com:Extension>
 
-        <!-- Context-menu handler bound to the CLSID above, for the four
-             target types: files (*), folders + drives (Directory), and the
-             folder background. -->
+        <!-- Context-menu handler bound to the CLSID above. The modern
+             FileExplorerContextMenus schema only permits these ItemTypes:
+             * (files), Directory (folders), Directory\Background. "Drive" is
+             NOT expressible here, so drives get the entry via the classic
+             HKCU verb instead (see install-classic.ps1). -->
         <desktop4:Extension Category="windows.fileExplorerContextMenus">
           <desktop4:FileExplorerContextMenus>
             <desktop5:ItemType Type="*">
@@ -83,9 +85,6 @@
               <desktop5:Verb Id="CopyAsWslPath" Clsid="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60" />
             </desktop5:ItemType>
             <desktop5:ItemType Type="Directory\Background">
-              <desktop5:Verb Id="CopyAsWslPath" Clsid="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60" />
-            </desktop5:ItemType>
-            <desktop5:ItemType Type="Drive">
               <desktop5:Verb Id="CopyAsWslPath" Clsid="7A3D9E54-2C1B-4F8A-9E6D-1B2C3D4E5F60" />
             </desktop5:ItemType>
           </desktop4:FileExplorerContextMenus>
