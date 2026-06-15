@@ -66,7 +66,7 @@ IFACEMETHODIMP CopyAsWslPathCommand::GetToolTip(IShellItemArray*, PWSTR* infoTip
 
 IFACEMETHODIMP CopyAsWslPathCommand::GetCanonicalName(GUID* guidCommandName) {
     if (!guidCommandName) return E_POINTER;
-    *guidCommandName = CLSID_CopyAsWslPathCommand;
+    *guidCommandName = __uuidof(CopyAsWslPathCommand);
     return S_OK;
 }
 
