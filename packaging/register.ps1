@@ -50,11 +50,30 @@ Import-Certificate -FilePath $cerPath -CertStoreLocation "Cert:\LocalMachine\Tru
 Write-Host "Dev certificate ready and trusted (TrustedPeople)."
 
 # --- 2. Build the sparse .msix from the manifest ---
-$sdkBin = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64" -Directory |
-    Sort-Object Name -Descending | Select-Object -First 1
-$makeAppx = Join-Path $sdkBin.FullName "makeappx.exe"
-$signTool = Join-Path $sdkBin.FullName "signtool.exe"
-if (-not (Test-Path $makeAppx)) { throw "makeappx.exe not found. Install the Windows 10/11 SDK." }
+# Find the newest SDK bin that actually contains the tools. The version lives
+# in the PARENT directory name (e.g. ...\bin\10.0.26100.0\x64), so sort the
+# version dirs by [version] -- sorting the leaf "x64" dirs by Name is wrong
+# (every leaf is named "x64") and picks an arbitrary SDK that may lack the tools.
+$sdkRoot = "${env:ProgramFiles(x86)}\Windows Kits\10\bin"
+$makeAppx = $null
+$signTool = $null
+if (Test-Path $sdkRoot) {
+    $versionDirs = Get-ChildItem $sdkRoot -Directory |
+        Where-Object { $_.Name -match '^\d+\.\d+\.\d+\.\d+$' } |
+        Sort-Object { [version]$_.Name } -Descending
+    foreach ($v in $versionDirs) {
+        $candidate = Join-Path $v.FullName "x64\makeappx.exe"
+        if (Test-Path $candidate) {
+            $makeAppx = $candidate
+            $signTool = Join-Path $v.FullName "x64\signtool.exe"
+            break
+        }
+    }
+}
+if (-not $makeAppx) {
+    throw "makeappx.exe not found under $sdkRoot\<version>\x64. Install the Windows 10/11 SDK (with the signing/packaging tools)."
+}
+Write-Host "Using SDK tools: $makeAppx"
 
 $msixPath = Join-Path $packagingDir "RightClickWslPath.msix"
 
